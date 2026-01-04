@@ -233,7 +233,6 @@ def run_tree_mode(
     for i, root in enumerate(roots):
         # Interactive mode handled in main.py now
         selected_files = selected_files_map.get(root)
-
         # Add header for multiple paths
         if len(roots) > 1:
             if i > 0:
@@ -319,6 +318,7 @@ def run_tree_mode(
         if args.format in ("json", "md"):
 
             include_contents = not args.no_contents
+
             tree_data = build_tree_data(
                 root=root,
                 output_buffer=output_buffer,
@@ -340,9 +340,14 @@ def run_tree_mode(
             )
 
             if args.format == "json":
-                format_json(tree_data)
+                content_to_copy = format_json(tree_data)
             elif args.format == "md":
-                format_markdown_tree(tree_data)
+                content_to_copy = format_markdown_tree(tree_data, include_contents=include_contents)
+            elif args.format == "txt":
+                content_to_copy = format_text_tree(tree_data, include_contents=include_contents)
+            else:
+                content_to_copy = format_text_tree(tree_data, include_contents=include_contents)
+
 
 
         if not copy_to_clipboard(content_to_copy, logger=logger):
